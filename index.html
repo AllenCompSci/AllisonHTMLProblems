@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Calendar Pattern</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+
+  
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+<script type = text/javascript>
+    var create = new Date();
+    function getName(){
+        var num = create.getMonth();
+        switch(num){
+            case 0: return "January";
+            case 1: return "February";
+            case 2: return "March";
+            case 3: return "April";
+            case 4: return "May";
+            case 5: return "June";
+            case 6: return "July";
+            case 7: return "August";
+            case 8: return "September";
+            case 9: return "October";
+            case 10: return "November";
+            case 11: return "December";
+        }
+    }
+
+    function GetOperator(randomNum){
+        this.value = randomNum;
+        this.op = "";
+        switch (randomNum){
+            case 0 : this.op = "+";
+                break;
+            case 1 : this.op = "-";
+                break;
+            case 2 : this.op = "*";
+                break;
+            case 3 : this.op = "/";
+                break;
+            case 4 : this.op = "^";
+                break;
+        }
+    }
+
+    function generateNum(){
+        return Math.floor((Math.random() * 9) + 1);
+    }
+
+    function getValue(num1, num2, num3, num4, op1, op2, op3) {
+        var hold1 = new GetOperator(op1.value);
+        var hold2 = new GetOperator(op2.value);
+        var hold3 = new GetOperator(op3.value);
+        var h1 =  num1;
+        var h2 =  num2;
+        var h3 =  num3;
+        var h4 =  num4;
+        if (hold1.value == hold2.value && hold1.value == hold3.value) {
+            switch (hold1.value) {
+                case 0 :
+                    h2 =  num1 +  num2 +  num3 +  num4;
+                    break;
+                case 1 :
+                    h2 =  num1 -  num2 -  num3 -  num4;
+                    break;
+                case 2 :
+                    h2 =  num1 *  num2 *  num3 *  num4;
+                    break;
+                case 3 :
+                    h2 =  num1 /  num2 /  num3 /  num4;
+                    break;
+                case 4 :
+                    h2 =  Math.pow(Math.pow(Math.pow( num1,  num2),  num3),  num4);
+                    break;
+            }
+        }
+
+        else {
+
+            for (var i = 4; i >= 0; i--) {
+                if (hold1.value == i) {
+                    h2 = useOP(h1, h2, i);
+                }
+                if (hold3.value == i) {
+                    h3 = useOP(h3, h4, i);
+                }
+                if (hold2.value == i) {
+                    h2 = useOP(h2, h3, i);
+                    h3 = h4;
+                    hold2.value = hold3.value;
+                    hold3.value = -1;
+                }
+            }
+
+        }
+
+
+        return  num1 + " " + op1.op + " " + num2 + " " + op2.op + " " + num3 + " " + op3.op + " " + num4 +  " = " + h2;
+    }
+
+    function useOP(num1, num2, opVal){
+        switch(opVal) {
+            case 0 :
+                return num1 + num2;
+            case 1 :
+                return num1 - num2;
+            case 2 :
+                return num1 * num2;
+            case 3 :
+                return num1 / num2;
+            case 4 :
+                return Math.pow(num1, num2);
+        }
+    }
+
+    function gen(){
+        var nums = [];
+        nums[0] = generateNum();
+        nums[1] = generateNum();
+        nums[2] = generateNum();
+        nums[3] = generateNum();
+        return nums;
+    }
+
+    function regen(nums){
+        nums = gen();
+        return nums;
+    }
+    function shuffle(nums){
+        var rNum = Math.floor((Math.random()*6));
+        var hold = [];
+        hold[0] = nums[2];
+        hold[1] = nums[0];
+        hold[2] = nums[3];
+        hold[3] = nums[1];
+        switch(rNum){
+            case 0:
+                hold[0] = nums[1];
+                hold[1] = nums[2];
+                hold[2] = nums[3];
+                hold[3] = nums[0];
+                break;
+            case 1:
+                hold[0] = nums[2];
+                hold[1] = nums[3];
+                hold[2] = nums[0];
+                hold[3] = nums[1];
+                break;
+            case 2:
+                hold[0] = nums[3];
+                hold[1] = nums[0];
+                hold[2] = nums[1];
+                hold[3] = nums[2];
+                break;
+            case 3:
+                hold[0] = nums[2];
+                hold[1] = nums[0];
+                hold[2] = nums[3];
+                hold[3] = nums[1];
+                break;
+            case 4:
+                hold[0] = nums[2];
+                hold[1] = nums[3];
+                hold[2] = nums[1];
+                hold[3] = nums[0];
+                break;
+
+
+
+
+        }
+        nums[0] = hold[0];
+        nums[1] = hold[1];
+        nums[2] = hold[2];
+        nums[3] = hold[3];
+        return nums;
+    }
+
+    function genMonth(nums, monthScream, numDays){
+        nums = gen();
+        var op1, op2, op3;
+        while(monthScream.length > 0) {
+            monthScream.pop();
+        }
+
+        for(var i = 0; i < numDays; i++){
+            shuffle(nums);
+            var count;
+            do {
+                count = 0;
+                op1 = new GetOperator(Math.floor(Math.random() * 5));
+                op2 = new GetOperator(Math.floor(Math.random() * 5));
+                op3 = new GetOperator(Math.floor(Math.random() * 5));
+                if (op1.value == 4)
+                    count++;
+                if (op2.value == 4)
+                    count++;
+                if (op3.value == 4)
+                    count++;
+            }while(count >= 2);
+
+            do{
+                var test = getValue(nums[0], nums[1], nums[2], nums[3], op1, op2, op3);
+                count = 0;
+                for (var j = 0; j < i && count == 0; j++) {
+                    if(monthScream[j] == test){
+                        count++;
+                    }
+                }
+            }while(count != 0);
+            console.log(test);
+            monthScream.push(test);
+        }
+    }
+    var nums = [];
+    regen(nums);
+    var op1, op2, op3;
+    var count;
+    do {
+        count = 0;
+        op1 = new GetOperator(Math.floor(Math.random() * 5));
+        op2 = new GetOperator(Math.floor(Math.random() * 5));
+        op3 = new GetOperator(Math.floor(Math.random() * 5));
+        if (op1.value == 4)
+            count++;
+        if (op2.value == 4)
+            count++;
+        if (op3.value == 4)
+            count++;
+    }while(count >= 2);
+    //var day = "" + create.getDate();
+    //var month = getName();
+    var year =  create.getFullYear();
+    var DAY = create.getDay();
+    // DAY will be 0 - Sunday 1 - Monday 2 - Tuesday etc.
+
+    //var List = getValue(nums[0], nums[1], nums[2], nums[3], op1, op2, op3);
+
+    var isLeap = false;
+    if(year % 4 == 0){
+        if(year % 100 == 0){
+            if(year % 400 == 0){
+                isLeap = true;
+            }
+        }
+        else{
+            isLeap = true;
+        }
+    }
+    var days = [31,28,31,30,31,30,31,31,30,31,30,31];
+    if(isLeap){
+        days[1] = 29;
+    }
+    var prevMonth = create.getDate() % 7;
+    if(prevMonth > DAY){
+        prevMonth = prevMonth - DAY - 1;
+    }
+    var SpecialDays = [];
+    var DayNumbersCal = [];
+    var currentMonth = create.getMonth();
+    var pastMonth = currentMonth-1;
+    if(pastMonth < 0){
+        pastMonth = 11;
+    }
+    var nextMonth = 1;
+    for(var i = 0; i < 42; i++){
+
+        if(i > prevMonth && i <= (days[currentMonth]+ prevMonth))
+        {
+            SpecialDays.push(false);
+            DayNumbersCal.push(i-prevMonth);
+        }
+        else{
+            SpecialDays.push(true);
+            if(i <= prevMonth){
+                DayNumbersCal.push(days[pastMonth]-prevMonth+i);
+                console.log(days[pastMonth]-prevMonth+i);
+
+            }
+            else{
+                DayNumbersCal.push(nextMonth++);
+            }
+        }
+    }
+    var monthScream = [];
+    genMonth(nums, monthScream, days[0]);
+</script>
+<body>
+  <div id="calendar-wrap">
+    		<header>
+
+    			<h1>January 2017</h1>
+    		</header>
+    		<div id="calendar">
+    			<ul class="weekdays">
+    				<li>Sunday</li>
+    				<li>Monday</li>
+    				<li>Tuesday</li>
+    				<li>Wednesday</li>
+    				<li>Thursday</li>
+    				<li>Friday</li>
+    				<li>Saturday</li>
+    			</ul>
+
+    			<!-- Days from previous month -->
+
+				<!-- Row #1 -->
+
+				<ul class="days">
+					<li class="day other-month">
+						<div class="date">25</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">26</div> <!-- Next Month -->
+					</li>
+					<li class="day other-month">
+						<div class="date">27</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">28</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">29</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">30</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">31</div>
+					</li>
+				</ul>
+				<!-- class="day other-month">
+				<!-- Days in current month -->
+
+				<!-- Row #2 -->
+
+    			<ul class="days">
+    				<li class="day">
+    					<div class="date">1</div>
+						<div class="event">
+							<div class="event-desc">
+								<script>document.write(monthScream[0])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">2</div>
+						<div class="event">
+							<div class="event-desc">
+								<script>document.write(monthScream[1])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">3</div>
+						<div class="event">
+							<div class="event-desc">
+								<script>document.write(monthScream[2])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">4</div>
+						<div class="event">
+							<div class="event-desc">
+								<script>document.write(monthScream[3])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">5</div>
+						<div class="event">
+							<div class="event-desc">
+								<script>document.write(monthScream[4])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">6</div>
+						<div class="event">
+							<div class="event-desc">
+                                    <script>document.write(monthScream[5])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">7</div>
+						<div class="event">
+							<div class="event-desc">
+                                    <script>document.write(monthScream[6])</script>
+							</div>
+						</div>
+					</li>
+
+
+				</ul>
+
+    				<!-- Row #3 -->
+
+				<ul class="days">
+
+					<li class="day">
+						<div class="date">8</div>
+						<div class="event">
+							<div class="event-desc">
+                                    <script>document.write(monthScream[7])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">9</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[8])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">10</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[9])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">11</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[10])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">12</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[11])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">13</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[12])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">14</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[13])</script>
+							</div>
+						</div>
+					</li>
+				</ul>
+
+					<!-- Row #4 -->
+
+				<ul class="days">
+
+					<li class="day">
+						<div class="date">15</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[14])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">16</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[15])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">17</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[16])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">18</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[17])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">19</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[18])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">20</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[19])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">21</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[20])</script>
+							</div>
+						</div>
+					</li>
+				</ul>
+    				<!-- Row #5 -->
+
+				<ul class="days">
+
+					<li class="day">
+						<div class="date">22</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[21])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">23</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[22])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">24</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[23])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">25</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[24])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">26</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[25])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">27</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[26])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">28</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[27])</script>
+							</div>
+						</div>
+					</li>
+				</ul>
+    					<!-- Row #6 -->
+
+				<ul class="days">
+
+					<li class="day">
+						<div class="date">29</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[28])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">30</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[29])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day">
+						<div class="date">31</div>
+						<div class="event">
+							<div class="event-desc">
+                                <script>document.write(monthScream[30])</script>
+							</div>
+						</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">1</div>
+
+					</li>
+					<li class="day other-month">
+						<div class="date">2</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">3</div>
+					</li>
+					<li class="day other-month">
+						<div class="date">4</div>
+					</li>
+				</ul>
+
+
+    		</div><!-- /. calendar -->
+    	</div><!-- /. wrap -->
+  
+    <script src="js/index.js"></script>
+
+</body>
+</html>
