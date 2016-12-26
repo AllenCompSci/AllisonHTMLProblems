@@ -13,6 +13,7 @@
 </head>
 <script type = text/javascript>
     var create = new Date();
+    /*
     function getName(){
         var num = create.getMonth();
         switch(num){
@@ -30,107 +31,7 @@
             case 11: return "December";
         }
     }
-
-    function GetOperator(randomNum){
-        this.value = randomNum;
-        this.op = "";
-        switch (randomNum){
-            case 0 : this.op = "+";
-                break;
-            case 1 : this.op = "-";
-                break;
-            case 2 : this.op = "*";
-                break;
-            case 3 : this.op = "/";
-                break;
-            case 4 : this.op = "^";
-                break;
-        }
-    }
-
-    function generateNum(){
-        return Math.floor((Math.random() * 9) + 1);
-    }
-
-    function getValue(num1, num2, num3, num4, op1, op2, op3) {
-        var hold1 = new GetOperator(op1.value);
-        var hold2 = new GetOperator(op2.value);
-        var hold3 = new GetOperator(op3.value);
-        var h1 =  num1;
-        var h2 =  num2;
-        var h3 =  num3;
-        var h4 =  num4;
-        if (hold1.value == hold2.value && hold1.value == hold3.value) {
-            switch (hold1.value) {
-                case 0 :
-                    h2 =  num1 +  num2 +  num3 +  num4;
-                    break;
-                case 1 :
-                    h2 =  num1 -  num2 -  num3 -  num4;
-                    break;
-                case 2 :
-                    h2 =  num1 *  num2 *  num3 *  num4;
-                    break;
-                case 3 :
-                    h2 =  num1 /  num2 /  num3 /  num4;
-                    break;
-                case 4 :
-                    h2 =  Math.pow(Math.pow(Math.pow( num1,  num2),  num3),  num4);
-                    break;
-            }
-        }
-
-        else {
-
-            for (var i = 4; i >= 0; i--) {
-                if (hold1.value == i) {
-                    h2 = useOP(h1, h2, i);
-                }
-                if (hold3.value == i) {
-                    h3 = useOP(h3, h4, i);
-                }
-                if (hold2.value == i) {
-                    h2 = useOP(h2, h3, i);
-                    h3 = h4;
-                    hold2.value = hold3.value;
-                    hold3.value = -1;
-                }
-            }
-
-        }
-
-
-        return  num1 + " " + op1.op + " " + num2 + " " + op2.op + " " + num3 + " " + op3.op + " " + num4 +  " = " + h2;
-    }
-
-    function useOP(num1, num2, opVal){
-        switch(opVal) {
-            case 0 :
-                return num1 + num2;
-            case 1 :
-                return num1 - num2;
-            case 2 :
-                return num1 * num2;
-            case 3 :
-                return num1 / num2;
-            case 4 :
-                return Math.pow(num1, num2);
-        }
-    }
-
-    function gen(){
-        var nums = [];
-        nums[0] = generateNum();
-        nums[1] = generateNum();
-        nums[2] = generateNum();
-        nums[3] = generateNum();
-        return nums;
-    }
-
-    function regen(nums){
-        nums = gen();
-        return nums;
-    }
+*/
     function shuffle(nums){
         var rNum = Math.floor((Math.random()*6));
         var hold = [];
@@ -181,29 +82,157 @@
         return nums;
     }
 
+    function GetOperator(randomNum){
+        this.value = randomNum;
+        this.op = "";
+        switch (randomNum){
+            case 0 : this.op = "+";
+                break;
+            case 1 : this.op = "-";
+                break;
+            case 2 : this.op = "*";
+                break;
+            case 3 : this.op = "\b\b";
+                break;
+        }
+    }
+
+    function generateNum(){
+        return Math.floor((Math.random() * 9) + 1);
+    }
+
+    function append(fDigit, sDigit){
+        var cpy = sDigit;
+        var tenPow = 1;
+        while(cpy  > 0){
+            tenPow ++;
+            cpy = Math.floor(cpy/10);
+        }
+        return (Math.pow(10, tenPow) * fDigit) + sDigit;
+    }
+
+    function getValue(num1, num2, num3, num4, op1, op2, op3) {
+        var hold1 = new GetOperator(op1.value);
+        var hold2 = new GetOperator(op2.value);
+        var hold3 = new GetOperator(op3.value);
+        var h1 =  num1;
+        var h2 =  num2;
+        var h3 =  num3;
+        var h4 =  num4;
+        if (hold1.value == hold2.value && hold1.value == hold3.value) {
+            switch (hold1.value) {
+                case 0 :
+                    h2 =  num1 +  num2 +  num3 +  num4;
+                    break;
+                case 1 :
+                    h2 =  num1 -  num2 -  num3 -  num4;
+                    break;
+                case 2 :
+                    h2 =  num1 *  num2 *  num3 *  num4;
+                    break;
+                case 3 :
+                    h2 = ((num1 * 10 + num2)*10 + num3) * 10  + num4;
+            }
+        }
+
+        else {
+            if(hold1.value == 3){
+                console.log(h1 + " " + h2 + " = " + append(h1,h2));
+                h2 = append(h1, h2);
+
+                hold1.value = -1;
+            }
+
+            if(hold3.value == 3){
+                console.log(h3 + " " + h4 + " = " + append(h3,h4));
+
+                h3 = append(h3, h4);
+                hold3.value = -1;
+            }
+            if(hold2.value == 3){
+                console.log(h2 + " " + h3 + " = " + append(h2,h3));
+                h2 = append(h2, h3);
+                h3 = h4;
+                hold2.value = hold3.value;
+                hold3.value = -1;
+            }
+            var opSw = [0,1,2,3];
+            shuffle(opSw);
+
+            for (var i = 3; i >= 0; i--) {
+                if (hold1.value == opSw[i]) {
+                    h2 = useOP(h1, h2, opSw[i]);
+                    hold1.value = -1;
+                }
+                if (hold3.value == opSw[i]) {
+                    h3 = useOP(h3, h4, opSw[i]);
+                    hold3.value = -1;
+                }
+                if (hold2.value == opSw[i]) {
+                    h2 = useOP(h2, h3, opSw[i]);
+                    h3 = h4;
+                    hold2.value = hold3.value;
+                    hold3.value = -1;
+                }
+            }
+
+        }
+
+
+        return  num1 + " " + op1.op + " " + num2 + " " + op2.op + " " + num3 + " " + op3.op + " " + num4 +  " = " + h2;
+    }
+
+    function useOP(num1, num2, opVal){
+        switch(opVal) {
+            case 0 :
+                return num1 + num2;
+            case 1 :
+                return num1 - num2;
+            case 2 :
+                return num1 * num2;
+            case 3 :
+                return append(num1, num2);
+        }
+    }
+
+    function gen(){
+        var nums = [];
+        nums[0] = generateNum();
+        nums[1] = generateNum();
+        nums[2] = generateNum();
+        nums[3] = generateNum();
+        return nums;
+    }
+
+    function regen(nums){
+        nums = gen();
+        return nums;
+    }
+
+
     function genMonth(nums, monthScream, numDays){
         nums = gen();
+        shuffle(nums);
         var op1, op2, op3;
         while(monthScream.length > 0) {
             monthScream.pop();
         }
-
         for(var i = 0; i < numDays; i++){
-            shuffle(nums);
+
             var count;
             do {
                 count = 0;
-                op1 = new GetOperator(Math.floor(Math.random() * 5));
-                op2 = new GetOperator(Math.floor(Math.random() * 5));
-                op3 = new GetOperator(Math.floor(Math.random() * 5));
-                if (op1.value == 4)
+                op1 = new GetOperator(Math.floor(Math.random() * 4));
+                op2 = new GetOperator(Math.floor(Math.random() * 4));
+                op3 = new GetOperator(Math.floor(Math.random() * 4));
+                if (op1.value == 3)
                     count++;
-                if (op2.value == 4)
+                if (op2.value == 3)
                     count++;
-                if (op3.value == 4)
+                if (op3.value == 3)
                     count++;
-            }while(count >= 2);
-
+            }while(count > 2);
+            var longGit = 0;
             do{
                 var test = getValue(nums[0], nums[1], nums[2], nums[3], op1, op2, op3);
                 count = 0;
@@ -212,9 +241,11 @@
                         count++;
                     }
                 }
-            }while(count != 0);
-            console.log(test);
+                longGit++;
+            }while(count != 0 && longGit < 200);
+
             monthScream.push(test);
+            console.log(test);
         }
     }
     var nums = [];
@@ -279,7 +310,7 @@
             SpecialDays.push(true);
             if(i <= prevMonth){
                 DayNumbersCal.push(days[pastMonth]-prevMonth+i);
-                console.log(days[pastMonth]-prevMonth+i);
+
 
             }
             else{
